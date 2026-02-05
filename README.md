@@ -32,7 +32,7 @@ Basic example:
 
 ```python
 import numpy as np
-from compute_cq import compute_cq_and_unitary
+from compute_cq_build_unitary import compute_cq_and_unitary
 
 # Generate random binary time series
 bits = np.random.randint(0, 2, 10000)
