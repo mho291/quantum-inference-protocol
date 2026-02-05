@@ -1,0 +1,13 @@
+title: Quantum Model Inference and Unitary Construction
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Matthew
+    family-names: Ho
+    email: matthew.ho.291@gmail.com
+    affiliation: 'A*STAR, IHPC'
+repository-code: 'https://github.com/mho291/quantum-model-inference'
+license: MIT
+year: 2026
