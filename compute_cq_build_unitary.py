@@ -277,8 +277,6 @@ def compute_cq_and_unitary(bits=None, delta=0.001, L=2):
         
             if np.any(np.isnan(nextstate_singletimestep[:, jj])):
                 rounding_DP -= 1
-                if rounding_DP < 0:
-                    raise RuntimeError(f"Rounding failed to resolve column {jj}")
                 continue # Retry with lower precision
             else:
                 break # Success
