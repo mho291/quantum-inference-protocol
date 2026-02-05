@@ -1,5 +1,7 @@
-# Quantum Memory Inference and Unitary Construction
-Python implementation for inferring quantum model from a binary time series and constructing the corresponding unitary operator for quantum simulation.
+# Quantum Inference Protocol and Unitary Construction
+Python implementation of the quantum inference protocol to infer a quantum model from
+a binary time series and constructing the corresponding unitary operator for quantum
+simulation.
 
 The implementation follows the frameworks introduced in:
 - Quantum memory inference: Phys. Rev. A 101, 032327 (2020)  
