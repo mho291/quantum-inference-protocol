@@ -1,5 +1,24 @@
 import numpy as np
+import math
 
+def embed_matrix(A: np.ndarray):
+    """
+    Embed a dxd matrix A into a 2^n x 2^n matrix, where n = ceil(log2(d)).
+
+    Args:
+        A (np.ndarray): Matrix to embed.
+    Returns:
+        A_embedded (np.ndarray): 2^n x 2^n matrix with embedded matrix A.
+    """
+    d = A.shape[0]
+    assert A.shape[0] == A.shape[1], "Matrix must be square"
+    n = math.ceil(math.log2(d))
+    D = 2 ** n
+    A_embedded = np.eye(D, dtype=A.dtype)
+    A_embedded[:d, :d] = A
+
+    return A_embedded, n
+    
 def generate_binary_matrix(length):
     n = 2 ** length
     nums = np.arange(n, dtype=np.uint32)
@@ -11,6 +30,22 @@ def compute_cq_and_unitary(bits=None, delta=0.001, L=2):
     the equivalence relation, then builds the unitary operator [PRL 120, 240502 (2018)] for
     implementation on a quantum computer.
 
+    The unitary operator is then applied in a quantum circuit and only the bottom-most qubit is measured.
+    E.g. for a 4-qubit unitary:
+        0: -U---
+        1: -U---
+        2: -U---
+        3: -U-M-
+
+    Example of an implementation:
+    ```python
+    from qibo import Circuit, gates
+    circ = Circuit(4)
+    circ.add(gates.Unitary(Unitary0, 1, 2, 3))
+    circ.add(gates.M(3))
+    result = circ(nshots=int(1e4)).frequencies()
+    ```
+    
     Arguments:
         bits (np.ndarray): 1D numpy array of {0, 1} binary time series.
         delta (float): Tolerance for state merging. Defaults to 0.001. Delta is automatically
@@ -253,7 +288,7 @@ def compute_cq_and_unitary(bits=None, delta=0.001, L=2):
                 temp_transition_matrix[ii, jj] = np.nan # To prevent np.around(value, 0) = 0 from coinciding with other exact 0 values. This affects finding nextstate_singletimestep.
     
     temp_condfut_singletimestep = condprobs_singletimestep
-    
+    # print('temp_condfut_singletimestep =\n', temp_condfut_singletimestep)
     nextstate_singletimestep = np.zeros(( np.shape(temp_condfut_singletimestep)[0], np.shape(temp_condfut_singletimestep)[1] ))
     # Go through each column. If each column fails, adjust rounding_dp
     for jj in range(np.shape(temp_condfut_singletimestep)[1]):
@@ -274,9 +309,11 @@ def compute_cq_and_unitary(bits=None, delta=0.001, L=2):
         
                     else:
                         nextstate_singletimestep[ii, jj] = at_row_of_transition_matrix[0][0]
-        
+                # print('nextstate_singletimestep =\n', nextstate_singletimestep)
             if np.any(np.isnan(nextstate_singletimestep[:, jj])):
                 rounding_DP -= 1
+                # if rounding_DP < 0:
+                    # raise RuntimeError(f"Rounding failed to resolve column {jj}")
                 continue # Retry with lower precision
             else:
                 break # Success
@@ -388,4 +425,7 @@ def compute_cq_and_unitary(bits=None, delta=0.001, L=2):
             vecc_sq = -vecc_sq
             QMS[j, j] = np.sqrt(1 + vecc_sq.sum())
 
+    # Embed Unitary if not 2^n x 2^n for n = 1, 2, 3, ...
+    Unitary, _ = embed_matrix(Unitary)
+    
     return Cq, Unitary, QMS
