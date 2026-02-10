@@ -112,17 +112,30 @@ def compute_cq_and_unitary(bits=None, delta=0.001, L=2):
         
         # Quantum memory states (each col contains probability amplitudes, colwise-elements**2 sums to 1)
         probamps = np.sqrt(condProbs_concatenated)
-        
-        # Building / merging states
+
+        # ---------------------------------------------------------------------------------------------------------------
+        # Building / merging states # 2026-02-10: Changed to sum over each column instead. This should be correct.
         sigma_states = np.zeros((np.shape(condProbs_concatenated)[0]))
         for ii in range(np.shape(sigma_states)[0]):
-            if np.sum(condProbs_concatenated[ii, :]) > 0:
+            if np.sum(condProbs_concatenated[:, ii]) > 0.01:
                 sigma_states[ii] = np.max(sigma_states) + 10
-        
+                
         indices = []
         for ii in range(np.shape(sigma_states)[0]):
-            if np.sum(condProbs_concatenated[ii, :]) > 0:
+            if np.sum(condProbs_concatenated[:, ii]) > 0.01:
                 indices.append(ii)
+        # ---------------------------------------------------------------------------------------------------------------
+        # # Building / merging states # Original from Matlab code
+        # sigma_states = np.zeros((np.shape(condProbs_concatenated)[0]))
+        # for ii in range(np.shape(sigma_states)[0]):
+        #     if np.sum(condProbs_concatenated[ii, :]) > 0.01:
+        #         sigma_states[ii] = np.max(sigma_states) + 10
+        
+        # indices = []
+        # for ii in range(np.shape(sigma_states)[0]):
+        #     if np.sum(condProbs_concatenated[ii, :]) > 0:
+        #         indices.append(ii)
+        # ---------------------------------------------------------------------------------------------------------------
         
         # Merge states using inner products <sigma_i | sigma_j>
         # If <o|o> >= 1-delta, same state, else different state
