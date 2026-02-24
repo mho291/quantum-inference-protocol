@@ -318,10 +318,10 @@ def compute_cq_and_unitary(bits=None, delta=0.001, L=2):
         
                     elif len(at_row_of_transition_matrix[0]) == 2:
                         if temp_transition_matrix[int(at_row_of_transition_matrix[0][0]), jj] == temp_transition_matrix(int(at_row_of_transition_matrix[0][1]), jj):
-                            nextstate_singletimestep[ii, jj] = at_row_of_transition_matrix[0][ii]
+                            nextstate_singletimestep[ii, jj] = at_row_of_transition_matrix[0][ii] + 1
         
                     else:
-                        nextstate_singletimestep[ii, jj] = at_row_of_transition_matrix[0][0]
+                        nextstate_singletimestep[ii, jj] = at_row_of_transition_matrix[0][0] + 1
                 # print('nextstate_singletimestep =\n', nextstate_singletimestep)
             if np.any(np.isnan(nextstate_singletimestep[:, jj])):
                 rounding_DP -= 1
@@ -330,9 +330,7 @@ def compute_cq_and_unitary(bits=None, delta=0.001, L=2):
                 continue # Retry with lower precision
             else:
                 break # Success
-    
-    nextstate_singletimestep += 1
-    
+        
     num_sigma = int(np.max(sigma_states))
     Unitary_nonzeros = np.zeros((num_sigma * 2, num_sigma))
     for jj in range(num_sigma):   # MATLAB: 1:max(sigma_states)
