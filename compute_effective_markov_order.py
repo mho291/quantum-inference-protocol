@@ -79,7 +79,7 @@ def distances_from_Lmin_Lmax(bits, len_min, len_max):
         trace_distance = np.sum(TD_vector) / (2**L - v)
         trace_distance_all_L[idx] = trace_distance
         logging.info(
-            f"[{idx+1}/{len_max-len_min+1}] delta = {delta:.12f}, L={L}, trace distance={trace_distance:.6f}"
+            f"[{idx+1}/{len_max-len_min+1}] L={L}, trace distance={trace_distance:.6f}"
         )
 
     return trace_distance_all_L
