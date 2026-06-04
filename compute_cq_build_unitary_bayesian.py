@@ -413,9 +413,9 @@ def compute_cq_and_unitary_bayesian(
                         elif len(at_row_of_transition_matrix[0]) == 2:
                             if temp_transition_matrix[
                                 int(at_row_of_transition_matrix[0][0]), jj
-                            ] == temp_transition_matrix(
+                            ] == temp_transition_matrix[
                                 int(at_row_of_transition_matrix[0][1]), jj
-                            ):
+                            ]:
                                 nextstate_singletimestep[ii, jj] = (
                                     at_row_of_transition_matrix[0][ii] + 1
                                 )
